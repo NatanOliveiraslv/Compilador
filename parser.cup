@@ -1,0 +1,38 @@
+import java_cup.runtime.*;
+
+parser code {:
+    FLexer s;
+    Parser(FLexer s) { this.s = s; }
+    java.util.Map<String, Integer> tabela = new java.util.HashMap<>();
+:}
+
+init with {: :};
+scan with {: return s.next_token(); :};
+
+/* Tokens */
+terminal SEMI, MAIS, MENOS, VEZES, LPAREN, RPAREN, ATRIB;
+terminal Integer NUMERO;
+terminal String ID;
+
+/* Não terminais */
+non terminal inicio;
+non terminal Integer exp;
+
+/* Precedência */
+precedence left MAIS, MENOS;
+precedence left VEZES;
+
+/* Regras */
+inicio ::= inicio exp:e SEMI     {: System.out.println("Resultado: " + e); :}
+        | exp:e SEMI            {: System.out.println("Resultado: " + e); :}
+        ;
+
+exp ::= exp:e1 MAIS exp:e2       {: RESULT = e1 + e2; :}
+     | exp:e1 MENOS exp:e2      {: RESULT = e1 - e2; :}
+     | exp:e1 VEZES exp:e2      {: RESULT = e1 * e2; :}
+     | MENOS exp:e              {: RESULT = -e; :}
+     | LPAREN exp:e RPAREN      {: RESULT = e; :}
+     | NUMERO:n                 {: RESULT = n; :}
+     | ID:i                     {: RESULT = tabela.getOrDefault(i, 0); :}
+     | ID:i ATRIB exp:e         {: tabela.put(i, e); RESULT = e; :}
+     ;
