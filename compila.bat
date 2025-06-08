@@ -13,3 +13,11 @@ cls
 
 echo Executando...
 java -cp "Jar\java-cup-11b-runtime.jar;src" Compilador
+
+pause
+
+del src\*.class
+del src\FLexer.java
+del src\Parser.java
+del src\sym.java
+del src\FLexer.java~

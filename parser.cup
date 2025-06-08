@@ -10,29 +10,60 @@ init with {: :};
 scan with {: return s.next_token(); :};
 
 /* Tokens */
-terminal SEMI, MAIS, MENOS, VEZES, LPAREN, RPAREN, ATRIB;
+terminal TENTAISSO, IGUAL, DIFERENTE, SEMI, MENOR, MAIOR, MAIS, LCOLCHETE, RCOLCHETE, MENOS, VEZES, LPAREN, RPAREN, ATRIB, MOSTRAESSAMERDA;
+terminal Boolean TRUE, FALSE;
 terminal Integer NUMERO;
 terminal String ID;
 
 /* Não terminais */
 non terminal inicio;
 non terminal Integer exp;
+non terminal Boolean condicao;
+non terminal Runnable estruturas, logica, print;
 
 /* Precedência */
 precedence left MAIS, MENOS;
 precedence left VEZES;
 
 /* Regras */
-inicio ::= inicio exp:e SEMI     {: System.out.println("Resultado: " + e); :}
-        | exp:e SEMI            {: System.out.println("Resultado: " + e); :}
-        ;
+inicio ::= estruturas:e {: e.run(); :} ;
+
+estruturas ::= logica:l                    {: RESULT = l; :}
+             | estruturas:e1 logica:l      {: RESULT = () -> { e1.run(); l.run(); }; :}
+             | exp:e SEMI                  {: RESULT = () -> {}; :}
+             | estruturas:e1 exp:e SEMI    {: RESULT = () -> { e1.run(); }; :}
+             | print:p                     {: RESULT = p; :}
+             | estruturas:e1 print:p       {: RESULT = () -> { e1.run(); p.run(); }; :}
+             ;
+
+logica ::= TENTAISSO LPAREN condicao:c RPAREN LCOLCHETE estruturas:bloco RCOLCHETE
+    {: 
+        RESULT = () -> {
+            if (c) {
+                bloco.run();  // Só executa se a condição for verdadeira
+            }
+        };
+    :}
+    ;
+
+print ::= MOSTRAESSAMERDA LPAREN exp:e RPAREN SEMI
+    {: RESULT = () -> System.out.println("Resultado: " + e); :}
+    ;
 
 exp ::= exp:e1 MAIS exp:e2       {: RESULT = e1 + e2; :}
-     | exp:e1 MENOS exp:e2      {: RESULT = e1 - e2; :}
-     | exp:e1 VEZES exp:e2      {: RESULT = e1 * e2; :}
-     | MENOS exp:e              {: RESULT = -e; :}
-     | LPAREN exp:e RPAREN      {: RESULT = e; :}
-     | NUMERO:n                 {: RESULT = n; :}
-     | ID:i                     {: RESULT = tabela.getOrDefault(i, 0); :}
-     | ID:i ATRIB exp:e         {: tabela.put(i, e); RESULT = e; :}
+     | exp:e1 MENOS exp:e2       {: RESULT = e1 - e2; :}
+     | exp:e1 VEZES exp:e2       {: RESULT = e1 * e2; :}
+     | MENOS exp:e               {: RESULT = -e; :}
+     | LPAREN exp:e RPAREN       {: RESULT = e; :}
+     | NUMERO:n                  {: RESULT = n; :}
+     | ID:i                      {: RESULT = tabela.getOrDefault(i, 0); :}
+     | ID:i ATRIB exp:e          {: tabela.put(i, e); RESULT = e; :}
      ;
+
+condicao ::= exp:e1 IGUAL exp:e2       {: RESULT = e1.equals(e2); :}
+           | exp:e1 DIFERENTE exp:e2   {: RESULT = !e1.equals(e2); :}
+           | exp:e1 MENOR exp:e2       {: RESULT = e1 < e2; :}
+           | exp:e1 MAIOR exp:e2       {: RESULT = e1 > e2; :}
+           | TRUE                      {: RESULT = true; :}
+           | FALSE                     {: RESULT = false; :}
+           ;
