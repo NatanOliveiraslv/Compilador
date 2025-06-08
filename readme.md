@@ -43,7 +43,8 @@ exp ::= exp MAIS exp
      | exp VEZES exp
      | MENOS exp
      | ( exp )
-     | NUMERO
+     | INT
+     | FLOAT
      | ID
      | ID ATRIB exp
 
@@ -80,7 +81,8 @@ Os tokens são definidos em [lexer.flex](lexer.flex):
 | TRUE               | `verdade`            |
 | FALSE              | `falsidade`          |
 | ID                 | identificador        |
-| NUMERO             | número inteiro       |
+| INT                | número inteiro       |
+| Float              | número flutuante     | 
 | STRING             | string entre aspas   |
 
 ## Como Executar
@@ -108,7 +110,7 @@ Os tokens são definidos em [lexer.flex](lexer.flex):
 Veja [`codigo.txt`](codigo.txt):
 
 ```txt
-a = 3;
+a = 3.5;
 b = a + 5;
 c = (b - 2) * 2;
 

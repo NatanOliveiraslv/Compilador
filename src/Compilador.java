@@ -19,8 +19,8 @@ public class Compilador {
                 s = lexer.next_token();
             }
 
-            // ---------- Análise Sintática ----------
-            System.out.println("\nAnálise Sintática:");
+            // ---------- Resultado  ------------
+            System.out.println("\nResultad:\n");
             FLexer scanner = new FLexer(new StringReader(codigo));
             Parser parser = new Parser(scanner);        
             parser.parse();

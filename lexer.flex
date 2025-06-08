@@ -12,9 +12,10 @@ import java_cup.runtime.Symbol;
   return new Symbol(sym.EOF);
 %eofval}
 
-digit = [0-9]
+int = [0-9]+
+float = ([0-9]+)\.([0-9]+)
 letter = [a-zA-Z]
-id = {letter}({letter}|{digit})*
+id = {letter}({letter}|{int})*
 whitespace = [ \t\r\n\f]+
 string = \"([^\"\\]|\\.)*\"
 
@@ -38,8 +39,11 @@ string = \"([^\"\\]|\\.)*\"
 ";"                   { return new Symbol(sym.SEMI, yytext()); }
 "verdade"             { return new Symbol(sym.TRUE, yytext()); }
 "falsidade"           { return new Symbol(sym.FALSE, yytext()); }
+
+{float}               { return new Symbol(sym.FLOAT, Double.parseDouble(yytext())); }
+{int}                 { return new Symbol(sym.INT, Integer.parseInt(yytext())); }
 {id}                  { return new Symbol(sym.ID, yytext()); }
-{string}              { String string = yytext().substring(1, yytext().length() - 1); return new Symbol(sym.STRING, string); }
-{digit}+              { return new Symbol(sym.NUMERO, Integer.parseInt(yytext())); }
-{whitespace}          { /* ignora espaços em branco */ }
+{string}              { String texto = yytext().substring(1, yytext().length()-1); return new Symbol(sym.STRING, texto); }
+{whitespace}          { /* ignora espaços */ }
+
 .                     { System.err.println("Caractere inválido: " + yytext()); }
