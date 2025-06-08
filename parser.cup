@@ -10,10 +10,10 @@ init with {: :};
 scan with {: return s.next_token(); :};
 
 /* Tokens */
-terminal TENTAISSO, IGUAL, DIFERENTE, SEMI, MENOR, MAIOR, MAIS, LCOLCHETE, RCOLCHETE, MENOS, VEZES, LPAREN, RPAREN, ATRIB, MOSTRAESSAMERDA;
+terminal TENTAISSO, SENAODERFAZISSO, IGUAL, DIFERENTE, SEMI, MENOR, MAIOR, MAIS, LCOLCHETE, RCOLCHETE, MENOS, VEZES, LPAREN, RPAREN, ATRIB, MOSTRAESSAMERDA;
 terminal Boolean TRUE, FALSE;
 terminal Integer NUMERO;
-terminal String ID;
+terminal String ID, STRING;
 
 /* Não terminais */
 non terminal inicio;
@@ -44,10 +44,20 @@ logica ::= TENTAISSO LPAREN condicao:c RPAREN LCOLCHETE estruturas:bloco RCOLCHE
             }
         };
     :}
+       | TENTAISSO LPAREN condicao:c RPAREN LCOLCHETE estruturas:bloco RCOLCHETE SENAODERFAZISSO LCOLCHETE estruturas:bloco2 RCOLCHETE
+    {: 
+        RESULT = () -> {
+            if (c) {
+                bloco.run();  // Executa se a condição for verdadeira
+            } else {
+                bloco2.run(); // Executa se a condição for falsa
+            }
+        };
+    :}    
     ;
 
-print ::= MOSTRAESSAMERDA LPAREN exp:e RPAREN SEMI
-    {: RESULT = () -> System.out.println("Resultado: " + e); :}
+print ::= MOSTRAESSAMERDA LPAREN exp:e RPAREN SEMI {: RESULT = () -> System.out.println(e); :}
+       | MOSTRAESSAMERDA  LPAREN STRING:s RPAREN SEMI {: RESULT = () -> System.out.println(s); :}
     ;
 
 exp ::= exp:e1 MAIS exp:e2       {: RESULT = e1 + e2; :}

@@ -3,7 +3,9 @@ b = a + 5;
 c = (b - 2) * 2;
 
 tentaisso(falsidade)[
+    mostraessamerda("Ta no if:");
     mostraessamerda(c);
+]senaoderfazisso[
+    mostraessamerda("Ta no else:");
+    mostraessamerda(a);
 ]
-
-mostraessamerda(a);

@@ -16,10 +16,12 @@ digit = [0-9]
 letter = [a-zA-Z]
 id = {letter}({letter}|{digit})*
 whitespace = [ \t\r\n\f]+
+string = \"([^\"\\]|\\.)*\"
 
 %%
 
 "tentaisso"           { return new Symbol(sym.TENTAISSO, yytext()); }
+"senaoderfazisso"     { return new Symbol(sym.SENAODERFAZISSO, yytext()); }
 "mostraessamerda"     { return new Symbol(sym.MOSTRAESSAMERDA, yytext()); }
 "=="                  { return new Symbol(sym.IGUAL, yytext()); }
 "!="                  { return new Symbol(sym.DIFERENTE, yytext()); }
@@ -37,6 +39,7 @@ whitespace = [ \t\r\n\f]+
 "verdade"             { return new Symbol(sym.TRUE, yytext()); }
 "falsidade"           { return new Symbol(sym.FALSE, yytext()); }
 {id}                  { return new Symbol(sym.ID, yytext()); }
+{string}              { String string = yytext().substring(1, yytext().length() - 1); return new Symbol(sym.STRING, string); }
 {digit}+              { return new Symbol(sym.NUMERO, Integer.parseInt(yytext())); }
 {whitespace}          { /* ignora espaços em branco */ }
 .                     { System.err.println("Caractere inválido: " + yytext()); }
