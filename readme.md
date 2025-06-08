@@ -82,7 +82,7 @@ Os tokens são definidos em [lexer.flex](lexer.flex):
 | FALSE              | `falsidade`          |
 | ID                 | identificador        |
 | INT                | número inteiro       |
-| Float              | número flutuante     | 
+| FLOAT              | número flutuante     | 
 | STRING             | string entre aspas   |
 
 ## Como Executar
