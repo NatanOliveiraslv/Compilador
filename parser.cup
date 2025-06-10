@@ -10,7 +10,7 @@ init with {: :};
 scan with {: return s.next_token(); :};
 
 /* Tokens */
-terminal TENTAISSO, SENAODERFAZISSO, IGUAL, DIFERENTE, SEMI, MENOR, MAIOR, MAIS, LCOLCHETE, RCOLCHETE, MENOS, VEZES, LPAREN, RPAREN, ATRIB, MOSTRAESSAMERDA;
+terminal TENTAISSO, SENAODERFAZISSO, REPETIDOR, IGUAL, DIFERENTE, SEMI, MENOR, MAIOR, MAIS, LCOLCHETE, RCOLCHETE, MENOS, VEZES, LPAREN, RPAREN, ATRIB, JOGANATELA;
 terminal Boolean TRUE, FALSE;
 terminal Integer INT;
 terminal Double FLOAT;
@@ -18,7 +18,8 @@ terminal String ID, STRING;
 
 /* Não terminais */
 non terminal inicio;
-non terminal Double exp;
+non terminal Double exp, flutuante;
+non terminal Integer inteiro;
 non terminal Boolean condicao;
 non terminal Runnable estruturas, logica, print;
 
@@ -55,10 +56,26 @@ logica ::= TENTAISSO LPAREN condicao:c RPAREN LCOLCHETE estruturas:bloco RCOLCHE
             }
         };
     :}
+    | REPETIDOR LPAREN condicao:c RPAREN LCOLCHETE estruturas:bloco RCOLCHETE
+    {: 
+        RESULT = () -> {
+            while (c) {
+                bloco.run();
+            }
+        };
+    :}
+    | REPETIDOR LPAREN inteiro:c RPAREN LCOLCHETE estruturas:bloco RCOLCHETE
+    {: 
+        RESULT = () -> {
+            for(int i = 0; i < c; i++) {
+                bloco.run();
+            }
+        };
+    :}
     ;
 
-print ::= MOSTRAESSAMERDA LPAREN exp:e RPAREN SEMI         {: RESULT = () -> System.out.println(e); :}
-       | MOSTRAESSAMERDA LPAREN STRING:s RPAREN SEMI       {: RESULT = () -> System.out.println(s); :}
+print ::= JOGANATELA LPAREN exp:e RPAREN SEMI         {: RESULT = () -> System.out.println(e); :}
+       | JOGANATELA LPAREN STRING:s RPAREN SEMI       {: RESULT = () -> System.out.println(s); :}
        ;
 
 exp ::= exp:e1 MAIS exp:e2       {: RESULT = e1 + e2; :}
@@ -66,11 +83,18 @@ exp ::= exp:e1 MAIS exp:e2       {: RESULT = e1 + e2; :}
      | exp:e1 VEZES exp:e2       {: RESULT = e1 * e2; :}
      | MENOS exp:e               {: RESULT = -e; :}
      | LPAREN exp:e RPAREN       {: RESULT = e; :}
-     | INT:n                     {: RESULT = (double) n; :}
-     | FLOAT:n                   {: RESULT = n; :}
+     | inteiro:n                 {: RESULT = (double) n; :}
+     | flutuante:n               {: RESULT = n; :}
      | ID:i                      {: RESULT = tabela.getOrDefault(i, 0.0); :}
      | ID:i ATRIB exp:e          {: tabela.put(i, e); RESULT = e; :}
      ;
+
+inteiro ::= INT:n {: RESULT = n; :}
+         ;
+
+flutuante ::= FLOAT:n {: RESULT = n; :}
+           ;
+        
 
 condicao ::= exp:e1 IGUAL exp:e2       {: RESULT = e1.equals(e2); :}
            | exp:e1 DIFERENTE exp:e2   {: RESULT = !e1.equals(e2); :}

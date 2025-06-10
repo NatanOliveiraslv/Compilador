@@ -3,9 +3,13 @@ b = a + 5;
 c = (b - 2) * 2;
 
 tentaisso(falsidade)[
-    mostraessamerda("Ta no if:");
-    mostraessamerda(c);
+    joganatela("Ta no if:");
+    joganatela(c);
 ]senaoderfazisso[
-    mostraessamerda("Ta no else:");
-    mostraessamerda(a);
+    joganatela("Ta no else:");
+    joganatela(a);
+]
+
+repetidor(5)[
+    joganatela("Ta no for");
 ]

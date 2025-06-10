@@ -20,7 +20,7 @@ public class Compilador {
             }
 
             // ---------- Resultado  ------------
-            System.out.println("\nResultad:\n");
+            System.out.println("\nResultado:\n");
             FLexer scanner = new FLexer(new StringReader(codigo));
             Parser parser = new Parser(scanner);        
             parser.parse();

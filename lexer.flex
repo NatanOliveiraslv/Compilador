@@ -23,7 +23,8 @@ string = \"([^\"\\]|\\.)*\"
 
 "tentaisso"           { return new Symbol(sym.TENTAISSO, yytext()); }
 "senaoderfazisso"     { return new Symbol(sym.SENAODERFAZISSO, yytext()); }
-"mostraessamerda"     { return new Symbol(sym.MOSTRAESSAMERDA, yytext()); }
+"joganatela"          { return new Symbol(sym.JOGANATELA, yytext()); }
+"repetidor"           { return new Symbol(sym.REPETIDOR, yytext()); }
 "=="                  { return new Symbol(sym.IGUAL, yytext()); }
 "!="                  { return new Symbol(sym.DIFERENTE, yytext()); }
 "<"                   { return new Symbol(sym.MENOR, yytext()); }
