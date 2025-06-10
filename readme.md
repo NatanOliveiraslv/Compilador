@@ -1,30 +1,26 @@
 # Compilador
 
-Este projeto é um compilador/interpreter simples desenvolvido em Java, utilizando JFlex para análise léxica e CUP para análise sintática. Ele interpreta uma linguagem fictícia com comandos personalizados, incluindo estruturas condicionais, laços e impressão de valores.
-
----
+Este projeto é um compilador simples desenvolvido em Java utilizando JFlex para análise léxica e CUP para análise sintática. Ele interpreta uma linguagem fictícia com comandos personalizados.
 
 ## Gramática
 
-A gramática está definida em [parser.cup](parser.cup):
+A gramática utilizada está definida em [parser.cup](parser.cup):
 
 - **Comandos de controle:**  
   - `tentaisso(condicao)[ ... ] senaoderfazisso[ ... ]` (estrutura condicional tipo if-else)
-  - `repetidor(numero)[ ... ]` (estrutura de repetição tipo for)
 - **Atribuição e expressões:**  
-  - `a = 3.5;`
+  - `a = 3;`
   - `b = a + 5;`
   - `c = (b - 2) * 2;`
 - **Impressão:**  
-  - `joganatela("texto");`
-  - `joganatela(variavel);`
+  - `mostraessamerda("texto");`
+  - `mostraessamerda(variavel);`
 
 ### Não Terminais
 
 - `inicio`
 - `estruturas`
 - `logica`
-- `repeticao`
 - `print`
 - `exp`
 - `condicao`
@@ -34,22 +30,13 @@ A gramática está definida em [parser.cup](parser.cup):
 ```text
 inicio ::= estruturas:e {: e.run(); :}
 
-estruturas ::= logica
-             | estruturas logica
-             | repeticao
-             | estruturas repeticao
-             | exp SEMI
-             | estruturas exp SEMI
-             | print
-             | estruturas print
+estruturas ::= logica | estruturas logica | exp SEMI | estruturas exp SEMI | print | estruturas print
 
-logica ::= TENTAISSO ( condicao ) [ estruturas ]
+logica ::= TENTAISSO ( condicao ) [ estruturas ] 
          | TENTAISSO ( condicao ) [ estruturas ] SENAODERFAZISSO [ estruturas ]
 
-repeticao ::= REPETIDOR ( exp ) [ estruturas ]
-
-print ::= JOGANATELA ( exp ) ;
-        | JOGANATELA ( STRING ) ;
+print ::= MOSTRAESSAMERDA ( exp ) ;
+        | MOSTRAESSAMERDA ( STRING ) ;
 
 exp ::= exp MAIS exp
      | exp MENOS exp
@@ -68,8 +55,6 @@ condicao ::= exp IGUAL exp
            | FALSE
 ```
 
----
-
 ## Tokens
 
 Os tokens são definidos em [lexer.flex](lexer.flex):
@@ -78,8 +63,7 @@ Os tokens são definidos em [lexer.flex](lexer.flex):
 |--------------------|----------------------|
 | TENTAISSO          | `tentaisso`          |
 | SENAODERFAZISSO    | `senaoderfazisso`    |
-| REPETIDOR          | `repetidor`          |
-| JOGANATELA         | `joganatela`         |
+| MOSTRAESSAMERDA    | `mostraessamerda`    |
 | IGUAL              | `==`                 |
 | DIFERENTE          | `!=`                 |
 | MENOR              | `<`                  |
@@ -96,10 +80,8 @@ Os tokens são definidos em [lexer.flex](lexer.flex):
 | TRUE               | `verdade`            |
 | FALSE              | `falsidade`          |
 | ID                 | identificador        |
-| NUMERO             | número inteiro ou decimal |
+| NUMERO             | número inteiro       |
 | STRING             | string entre aspas   |
-
----
 
 ## Como Executar
 
@@ -108,7 +90,7 @@ Os tokens são definidos em [lexer.flex](lexer.flex):
    - Os arquivos JAR do JFlex e CUP já estão na pasta `Jar/`
 
 2. **Compilação e Execução:**  
-   Execute o script `compila.bat` na raiz do projeto. Ele irá:
+   Basta rodar o script `compila.bat` na raiz do projeto. Ele irá:
    - Gerar o analisador léxico (`FLexer.java`)
    - Gerar o analisador sintático (`Parser.java`, `sym.java`)
    - Compilar todos os arquivos `.java`
@@ -121,38 +103,27 @@ Os tokens são definidos em [lexer.flex](lexer.flex):
    - Lista de tokens reconhecidos (análise léxica)
    - Execução do código (análise sintática e interpretação)
 
----
-
 ## Exemplo de Código de Entrada
 
 Veja [`codigo.txt`](codigo.txt):
 
 ```txt
-a = 3.5;
+a = 3;
 b = a + 5;
 c = (b - 2) * 2;
 
 tentaisso(falsidade)[
-    joganatela("Ta no if:");
-    joganatela(c);
+    mostraessamerda("Ta no if:");
+    mostraessamerda(c);
 ]senaoderfazisso[
-    joganatela("Ta no else:");
-    joganatela(a);
-]
-
-repetidor(5)[
-    joganatela("Ta no for");
+    mostraessamerda("Ta no else:");
+    mostraessamerda(a);
 ]
 ```
-
----
 
 ## Observações
 
 - O projeto limpa os arquivos gerados após a execução.
 - Mensagens de erro são exibidas no console caso haja problemas léxicos ou sintáticos.
-- Agora é possível utilizar números decimais nas expressões e comandos.
-- O comando de repetição `repetidor` foi adicionado, permitindo executar blocos múltiplas vezes.
-- O comando de impressão foi renomeado para `joganatela`.
 
 ---
