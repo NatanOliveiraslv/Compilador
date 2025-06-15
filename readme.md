@@ -1,32 +1,22 @@
 # Compilador Bill
 
-Este projeto é um compilador/interpreter simples desenvolvido em Java, utilizando JFlex para análise léxica e CUP para análise sintática. Ele interpreta uma linguagem fictícia com comandos personalizados, incluindo estruturas condicionais, laços e impressão de valores.
+Este projeto é um compilador/interpreter simples desenvolvido em Java, utilizando JFlex para análise léxica e CUP para análise sintática. Ele interpreta uma linguagem fictícia com comandos personalizados, incluindo estruturas condicionais, laços (for e while), atribuição de variáveis, expressões aritméticas e impressão de valores.
 
 ---
 
 ## Gramática
 
-A gramática está definida em [parser.cup](parser.cup):
-
-- **Comandos de controle:**  
-  - `tentaisso(condicao)[ ... ] senaoderfazisso[ ... ]` (estrutura condicional tipo if-else)
-  - `repetidor(numero)[ ... ]` (estrutura de repetição tipo for)
-- **Atribuição e expressões:**  
-  - `a = 3.5;`
-  - `b = a + 5;`
-  - `c = (b - 2) * 2;`
-- **Impressão:**  
-  - `joganatela("texto");`
-  - `joganatela(variavel);`
+A gramática utilizada pelo compilador Bill está definida em [parser.cup](parser.cup) e suporta comandos condicionais, laços, atribuições, expressões aritméticas e impressão. Veja as principais regras:
 
 ### Não Terminais
 
 - `inicio`
 - `estruturas`
 - `logica`
-- `repeticao`
 - `print`
 - `exp`
+- `inteiro`
+- `flutuante`
 - `condicao`
 
 ### Regras Principais
@@ -36,8 +26,6 @@ inicio ::= estruturas:e {: e.run(); :}
 
 estruturas ::= logica
              | estruturas logica
-             | repeticao
-             | estruturas repeticao
              | exp SEMI
              | estruturas exp SEMI
              | print
@@ -45,8 +33,8 @@ estruturas ::= logica
 
 logica ::= TENTAISSO ( condicao ) [ estruturas ]
          | TENTAISSO ( condicao ) [ estruturas ] SENAODERFAZISSO [ estruturas ]
-
-repeticao ::= REPETIDOR ( exp ) [ estruturas ]
+         | REPETIDOR ( condicao ) [ estruturas ]           // laço while
+         | REPETIDOR ( inteiro ) [ estruturas ]            // laço for
 
 print ::= JOGANATELA ( exp ) ;
         | JOGANATELA ( STRING ) ;
@@ -56,9 +44,14 @@ exp ::= exp MAIS exp
      | exp VEZES exp
      | MENOS exp
      | ( exp )
-     | NUMERO
+     | inteiro
+     | flutuante
      | ID
      | ID ATRIB exp
+
+inteiro ::= INT
+
+flutuante ::= FLOAT
 
 condicao ::= exp IGUAL exp
            | exp DIFERENTE exp
@@ -67,6 +60,12 @@ condicao ::= exp IGUAL exp
            | TRUE
            | FALSE
 ```
+
+**Observações:**
+- O comando `repetidor` pode ser usado tanto como laço `for` (`repetidor(numero)[ ... ]`) quanto como laço `while` (`repetidor(condicao)[ ... ]`).
+- Números inteiros e decimais são tratados separadamente como `inteiro` (`INT`) e `flutuante` (`FLOAT`).
+- Atribuições e expressões aritméticas suportam variáveis, inteiros e decimais.
+- O comando de impressão é `joganatela`.
 
 ---
 
@@ -96,7 +95,8 @@ Os tokens são definidos em [lexer.flex](lexer.flex):
 | TRUE               | `verdade`            |
 | FALSE              | `falsidade`          |
 | ID                 | identificador        |
-| NUMERO             | número inteiro ou decimal |
+| INT                | número inteiro       |
+| FLOAT              | número decimal       |
 | STRING             | string entre aspas   |
 
 ---
@@ -152,7 +152,5 @@ repetidor(5)[
 - O projeto limpa os arquivos gerados após a execução.
 - Mensagens de erro são exibidas no console caso haja problemas léxicos ou sintáticos.
 - Agora é possível utilizar números decimais nas expressões e comandos.
-- O comando de repetição `repetidor` foi adicionado, permitindo executar blocos múltiplas vezes.
+- O comando de repetição `repetidor` pode ser usado como laço `for` (com número) ou `while` (com condição).
 - O comando de impressão foi renomeado para `joganatela`.
-
----

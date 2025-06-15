@@ -10,6 +10,11 @@ tentaisso(falsidade)[
     joganatela(a);
 ]
 
-repetidor(5)[
+repetidor(a)[
+    joganatela("Ta no for");
+]
+
+repetidor(6)[
+    a = a + 1;
     joganatela("Ta no for");
 ]
