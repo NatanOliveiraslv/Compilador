@@ -1,4 +1,4 @@
-# Compilador Bill
+# Compilador
 
 Este projeto é um compilador/interpreter simples desenvolvido em Java, utilizando JFlex para análise léxica e CUP para análise sintática. Ele interpreta uma linguagem fictícia com comandos personalizados, incluindo estruturas condicionais, laços (for e while), atribuição de variáveis, expressões aritméticas e impressão de valores.
 
